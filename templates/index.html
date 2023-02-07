@@ -29,9 +29,10 @@
                         <!-- Logo -->
                         <div id="logo" class=" uk-hidden@s">
                             <a href="home.html">
-                                <b><h1 style="text-transform: uppercase;">Social Book</h1></b>
+                                <b><h1 style="text-transform: uppercase;">PetMatch</h1></b>
                             </a>
                         </div>
+
                             <input type="text" name="username" placeholder="Search for username..">&nbsp; &nbsp;
                             <button type="submit"><i class="fa fa-search fa-1x"></i></button>
 
@@ -70,7 +71,8 @@
                                     </p>
                                     <div>
                                         <input type="file" name="image_upload">
-                                        <textarea class="button soft-warning small" name="caption" placeholder="Write caption here..." ></textarea>
+                                        <!-- <a href="#" class="button soft-warning small"> Choose file</a> -->
+                                        <textarea class="button soft-warning small" name="caption" placeholder="caption..." ></textarea>
                                         <br>
                                         <button class="button bg-blue-700" type="submit" >Upload</button>
                                     </div>
@@ -81,6 +83,8 @@
                                 Your Image size Must be Maxmium 999MB
                             </div>
                         </div>
+
+                        <!-- profile -->
 
                         <a href="#">
                             <img src="{{user_profile.profileimg.url}}" class="header-avatar" alt="">
@@ -98,6 +102,10 @@
 
             <div class="container m-auto">
 
+                <!--<h1 class="lg:text-2xl text-lg font-extrabold leading-none text-gray-900 tracking-tight mb-5"> Feed </h1>--->
+
+                <div class="lg:flex justify-center lg:space-x-10 lg:space-y-0 space-y-5">
+
                     <!-- left sidebar-->
                     <div class="space-y-5 flex-shrink-0 lg:w-7/12">
 
@@ -109,7 +117,7 @@
                             <!-- post header-->
                             <div class="flex justify-between items-center px-4 py-3">
                                 <div class="flex flex-1 items-center space-x-4">
-                                    <span class="block font-semibold "><a href="/profile/{{post.user}}">@{{post.user}}</a></span>
+                                    <span class="block font-semibold "><a href="/profile/{{post.user}}">{{post.user}}</a></span>
                                 </div>
                               <div>
                                 <a href="#"> <i class="icon-feather-more-horizontal text-2xl hover:bg-gray-200 rounded-full p-2 transition -mr-1 "></i> </a>
@@ -142,12 +150,12 @@
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="25" height="25" class="">
                                                 <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
                                             </svg>
-                                            {% if post.number_of_likes == 0 %}
+                                            {% if post.no_of_likes == 0 %}
                                             <p>No likes</p>
-                                            {% elif post.number_of_likes == 1 %}
-                                            <p>Liked by {{post.number_of_likes}} person</p>
+                                            {% elif post.no_of_likes == 1 %}
+                                            <p>Liked by {{post.no_of_likes}} person</p>
                                             {% else %}
-                                            <p>Liked by {{post.number_of_likes}} people</p>
+                                            <p>Liked by {{post.no_of_likes}} people</p>
                                             {% endif %}
                                         </div>
                                         
@@ -166,6 +174,9 @@
     
                         </div>
                         {% endfor %}
+    
+                        
+
 
                     </div>
 
@@ -176,6 +187,7 @@
 
                             <div class="bg-gray-50  border-b border-gray-100 flex items-baseline justify-between py-4 px-6 ">
                                 <h2 class="font-semibold text-lg">Users You Can Follow</h2>
+                                <!-- <a href="#"> Refresh</a> -->
                             </div>
                            
                             <div class="divide-gray-300 divide-gray-50 divide-opacity-50 divide-y px-4 ">
@@ -199,6 +211,8 @@
                             </div>
 
                         </div>
+
+                      
 
                     </div>
 
