@@ -184,10 +184,12 @@ def settings(request):
 
         bio = request.POST['bio']
         location = request.POST['location']
+        phone_number = request.POST['phone_number']
 
         user_profile.profileimg = image
         user_profile.bio = bio
         user_profile.location = location
+        user_profile.phone_number = phone_number
         user_profile.save()
         return redirect('settings')
     return render(request, 'settings.html', {'user_profile': user_profile})
