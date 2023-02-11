@@ -29,10 +29,11 @@
                             <a href="/">
                             </a>
                         </div>
+                        <!--
                             
                                 <input type="text" name="username" placeholder="Search for pet..">&nbsp; &nbsp;
                                 <button type="submit"><i class="fa fa-search fa-1x"></i></button>
-
+                        -->
                     </div>
                     <div class="right-side lg:pr-4">
                         <a href="#" class="">
@@ -166,7 +167,7 @@
                 <div class="container">
                 <div class="row ng-scope">
                     <div class="col-md-9 col-md-pull-3">
-                     
+                   
                         {% for users in username_profile_list %}
                         <section class="search-result-item">
                             <a class="image-link" href="/profile/{{users.user}}"><img class="image" src="{{users.profileimg.url}}">

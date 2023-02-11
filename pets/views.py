@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from .models import Profile, Post, LikePost, FollowersCount
 from itertools import chain
+import random
 
 # Create your views here.
 
@@ -29,7 +30,32 @@ def index(request):
 
     feed_list = list(chain(*feed))
 
-    return render(request, 'index.html', {'user_profile': user_profile, 'posts': feed_list})
+    # user following suggestions of users that are not the currently logged in user or already followed
+    all_users = User.objects.all()
+    user_is_following = []
+
+    for user in user_following:
+        user_list = User.objects.get(username=user.user)
+        user_is_following.append(user_list)
+
+    new_suggestions_list =[x for x in list(all_users) if (x not in list(user_is_following))]
+    current_user = User.objects.filter(username=request.user.username)
+    final_suggestions = [x for x in list(new_suggestions_list) if (x not in list(current_user))]
+    random.shuffle(final_suggestions)
+
+    username_profile = []
+    username_profile_list = []
+
+    for users in final_suggestions:
+        username_profile.append(users.id)
+
+    for ids in username_profile:
+        profile_lists = Profile.objects.filter(id_user=ids)
+        username_profile_list.append(profile_lists)
+
+    suggestions_profiles = list(chain(*username_profile_list))
+
+    return render(request, 'index.html', {'user_profile': user_profile, 'posts': feed_list, 'suggestions_profiles': suggestions_profiles[:6]})
 
 
 @login_required(login_url='signin')
