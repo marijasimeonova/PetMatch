@@ -60,7 +60,7 @@ def index(request):
 
 @login_required(login_url='signin')
 def upload(request):
-    if request.method == 'POST':
+    if request.method == 'POST' and request.FILES.get('image_upload') != None:
         user = request.user.username
         image = request.FILES.get('image_upload')
         caption = request.POST['caption']
@@ -199,6 +199,57 @@ def settings(request):
         user_profile.save()
         return redirect('settings')
     return render(request, 'settings.html', {'user_profile': user_profile})
+
+
+@login_required(login_url='signin')
+def myposts(request):
+    user_object = User.objects.get(username=request.user.username)
+    user_profile = Profile.objects.get(user=user_object)
+    user_posts = Post.objects.filter(user=user_object)
+    user_number_of_posts = len(user_posts)
+
+    user_number_of_followers = len(FollowersCount.objects.filter(user=user_object))
+    user_number_of_following = len(FollowersCount.objects.filter(follower=user_object))
+    
+    context = {
+        'user_object': user_object,
+        'user_profile': user_profile,
+        'user_posts': user_posts,
+        'user_number_of_posts': user_number_of_posts,
+        'user_number_of_followers': user_number_of_followers,
+        'user_number_of_following': user_number_of_following,
+    }
+
+    return render(request, 'myposts.html', context)
+
+
+@login_required(login_url='signin')
+def delete_post(request):
+    if request.method == 'POST':
+        
+        post_id=request.POST['post_id']
+        Post.objects.filter(id=post_id).delete()
+
+        user_object = User.objects.get(username=request.user.username)
+        user_profile = Profile.objects.get(user=user_object)
+        user_posts = Post.objects.filter(user=user_object)
+        user_number_of_posts = len(user_posts)
+
+        user_number_of_followers = len(FollowersCount.objects.filter(user=user_object))
+        user_number_of_following = len(FollowersCount.objects.filter(follower=user_object))
+        
+        context = {
+            'user_object': user_object,
+            'user_profile': user_profile,
+            'user_posts': user_posts,
+            'user_number_of_posts': user_number_of_posts,
+            'user_number_of_followers': user_number_of_followers,
+            'user_number_of_following': user_number_of_following,
+        }
+
+        return render(request, 'myposts.html', context)
+    else:
+        return myposts(request)
 
 
 def signup(request):
