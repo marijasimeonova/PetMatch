@@ -93,7 +93,13 @@ def search(request):
 
     username_profile_list = list(chain(*username_profile_list))
 
-    return render(request, 'search.html', {'user_profile': user_profile, 'username_profile_list': username_profile_list})
+    context = {
+        'user_profile': user_profile,
+        'username_profile_list': username_profile_list,
+        'username_profile_list_len': len(username_profile_list)
+    }
+
+    return render(request, 'search.html', context)
 
 
 @login_required(login_url='signin')

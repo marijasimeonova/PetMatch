@@ -23,36 +23,36 @@
 	
 	<section>
 			<div class="feature-photo">
-				<figure><img src="{% static 'images/resources/cover_photo.jpg' %}" alt=""></figure>
+				<figure><img src="{% static 'images/resources/cover.jpg' %}" alt=""></figure>
 				<form action="/follow" method="POST">
 					{% csrf_token %}
 					<div class="add-btn">
-					<span style="color: white; font-size: 27px; margin-right: 520px;"><b><u><a href="/">Home</a></u></b></span>
+					<span style="color: black; font-size: 27px; margin-right: 520px;"><b><u><a href="/">Home</a></u></b></span>
 					
 					{% if user_number_of_posts == 0 %}
-					<span style="color: white; font-size: 27px;"><b>No Posts</b></span>
+					<span style="color: black; font-size: 27px;"><b>No Posts</b></span>
 					{% elif user_number_of_posts == 1 %}
-					<span style="color: white; font-size: 27px;"><b>{{user_number_of_posts}} Post</b></span>
+					<span style="color: black; font-size: 27px;"><b>{{user_number_of_posts}} Post</b></span>
 					{% else %}
 					<span style="color: black; font-size: 27px;"><b>{{user_number_of_posts}} Posts</b></span>
 					{% endif %}
 
 					{% if user_number_of_followers == 1 %}
-					<span style="color: white; font-size: 27px;"><b>{{user_number_of_followers}} follower</b></span>
+					<span style="color: black; font-size: 27px;"><b>{{user_number_of_followers}} follower</b></span>
 					{% else %}
-					<span style="color: white; font-size: 27px;"><b>{{user_number_of_followers}} followers</b></span>
+					<span style="color: black; font-size: 27px;"><b>{{user_number_of_followers}} followers</b></span>
 					{% endif %}
 
 
-					<span style="color: white; font-size: 27px;"><b>{{user_number_of_following}} following</b></span>
+					<span style="color: black; font-size: 27px;"><b>{{user_number_of_following}} following</b></span>
 
 					<input type="hidden" value="{{user.username}}" name="follower" />
 					<input type="hidden" value="{{user_object.username}}" name="user" />
 
 					{% if user_object.username == user.username %}
-					<a href="/settings" data-ripple="">Account Settings</a>
+					<a href="/settings" data-ripple="" style="background-color: blue !important; border: blue; font-weight: bold;">Account Settings</a>
 					{% else %}
-					<a data-ripple=""><button type="submit" style="background-color: #ffc0cb; border: #ffc0cb;">{{button_text}}</button></a>
+					<a data-ripple="" style="background-color: blue !important; border: blue;"><button type="submit" style="background-color: blue; border: blue;">{{button_text}}</button></a>
 					{% endif %}
 
 					</div>
@@ -64,6 +64,7 @@
 							<div class="user-avatar">
 								<figure>
 									<img src="{{user_profile.profileimg.url}}" style="height: 250px; width: 100%;" alt="">
+									
 								</figure>
 							</div>
 						</div>
@@ -82,9 +83,12 @@
 		</section><!-- top area -->
 		<section>
 			<div class="bio">
-				<div class="phone_number">
-					{{user_profile.bio}}<br>
-					<b> If you want to hangout call my owner: {{user_profile.phone_number}}</b>
+				<div class="location">
+					<div class="phone_number">
+						{{user_profile.bio}}<br>
+						I am from {{user_profile.location}}.<br>
+						<b> If you want to hangout call my owner: {{user_profile.phone_number}}</b>
+					</div>
 				</div>	
 			</div>
 		</section>
@@ -106,13 +110,13 @@
 							<div class="col-lg-6">
 								<div class="central-meta">
 									<ul class="photos">
-					
+								
 										{% for post in user_posts %}
 										<li>
 											<a class="strip" href="{{post.image.url}}" title="" data-strip-group="mygroup" data-strip-group-options="loop: false">
-												<img src="{{post.image.url}}" style="height: 250px; width: 300px;" alt=""></a>
+											<img src="{{post.image.url}}" style="height: 250px; width: 300px;" alt=""></a> 
 										</li>
-										{% endfor %}	
+										{% endfor %}
 										
 									</ul>
 								</div><!-- photos -->
@@ -121,7 +125,7 @@
 								<aside class="sidebar static">
 									
 								</aside>
-							</div>
+							</div><!-- sidebar -->
 						</div>	
 					</div>
 				</div>

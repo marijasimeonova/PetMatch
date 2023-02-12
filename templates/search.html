@@ -167,6 +167,10 @@
                 <div class="container">
                 <div class="row ng-scope">
                     <div class="col-md-9 col-md-pull-3">
+
+                        {% if username_profile_list_len == 0 %}
+                        <p> No pets found </p>
+                        {% endif %}
                    
                         {% for users in username_profile_list %}
                         <section class="search-result-item">
