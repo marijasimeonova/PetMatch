@@ -3,7 +3,7 @@ from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from .models import Profile, Post, LikePost, FollowersCount
+from .models import Profile, Post, LikePost, Followers
 from itertools import chain
 import random
 
@@ -18,7 +18,7 @@ def index(request):
     user_following_list = []
     feed = []
 
-    user_following = FollowersCount.objects.filter(
+    user_following = Followers.objects.filter(
         follower=request.user.username)
 
     for users in user_following:
@@ -38,9 +38,12 @@ def index(request):
         user_list = User.objects.get(username=user.user)
         user_is_following.append(user_list)
 
-    new_suggestions_list =[x for x in list(all_users) if (x not in list(user_is_following))]
+    new_suggestions_list = [x for x in list(
+        all_users) if (x not in list(user_is_following))]
     current_user = User.objects.filter(username=request.user.username)
-    final_suggestions = [x for x in list(new_suggestions_list) if (x not in list(current_user))]
+    final_suggestions = [x for x in list(
+        new_suggestions_list) if (x not in list(current_user))]
+    
     random.shuffle(final_suggestions)
 
     username_profile = []
@@ -58,6 +61,37 @@ def index(request):
     return render(request, 'index.html', {'user_profile': user_profile, 'posts': feed_list, 'suggestions_profiles': suggestions_profiles[:6]})
 
 
+# pk is the username of the currently viewed user
+@login_required(login_url='signin')
+def profile(request, pk):
+    user_object = User.objects.get(username=pk)
+    user_profile = Profile.objects.get(user=user_object)
+    user_posts = Post.objects.filter(user=pk)
+    user_number_of_posts = len(user_posts)
+    follower = request.user.username
+    user = pk
+
+    if Followers.objects.filter(follower=follower, user=user).first():
+        button_text = 'Unfollow'
+    else:
+        button_text = 'Follow'
+
+    user_number_of_followers = len(Followers.objects.filter(user=pk))
+    user_number_of_following = len(Followers.objects.filter(follower=pk))
+
+    context = {
+        'user_object': user_object,
+        'user_profile': user_profile,
+        'user_posts': user_posts,
+        'user_number_of_posts': user_number_of_posts,
+        'button_text': button_text,
+        'user_number_of_followers': user_number_of_followers,
+        'user_number_of_following': user_number_of_following,
+    }
+
+    return render(request, 'profile.html', context)
+
+
 @login_required(login_url='signin')
 def upload(request):
     if request.method == 'POST' and request.FILES.get('image_upload') != None:
@@ -69,6 +103,31 @@ def upload(request):
         new_post.save()
         return redirect('/')
     else:
+        return redirect('/')
+
+
+@login_required(login_url='signin')
+def like_post(request):
+    username = request.user.username
+    post_id = request.GET.get('post_id')
+
+    post = Post.objects.get(id=post_id)
+    # check if this post is already liked by the current user
+    like_filter = LikePost.objects.filter(
+        post_id=post_id, username=username).first()
+
+    if like_filter == None:
+        # like post
+        new_like = LikePost.objects.create(post_id=post_id, username=username)
+        new_like.save()
+        post.number_of_likes = post.number_of_likes + 1
+        post.save()
+        return redirect('/')
+    else:
+        # the post is already liked, remove like
+        like_filter.delete()
+        post.number_of_likes = post.number_of_likes - 1
+        post.save()
         return redirect('/')
 
 
@@ -103,75 +162,19 @@ def search(request):
 
 
 @login_required(login_url='signin')
-def like_post(request):
-    username = request.user.username
-    post_id = request.GET.get('post_id')
-
-    post = Post.objects.get(id=post_id)
-    # check if this post is already liked by the current user
-    like_filter = LikePost.objects.filter(
-        post_id=post_id, username=username).first()
-
-    if like_filter == None:
-        # like post
-        new_like = LikePost.objects.create(post_id=post_id, username=username)
-        new_like.save()
-        post.number_of_likes = post.number_of_likes + 1
-        post.save()
-        return redirect('/')
-    else:
-        # the post is already liked, remove like
-        like_filter.delete()
-        post.number_of_likes = post.number_of_likes - 1
-        post.save()
-        return redirect('/')
-
-
-# pk is the username of the currently viewed user
-@login_required(login_url='signin')
-def profile(request, pk):
-    user_object = User.objects.get(username=pk)
-    user_profile = Profile.objects.get(user=user_object)
-    user_posts = Post.objects.filter(user=pk)
-    user_number_of_posts = len(user_posts)
-    follower = request.user.username
-    user = pk
-
-    if FollowersCount.objects.filter(follower=follower, user=user).first():
-        button_text = 'Unfollow'
-    else:
-        button_text = 'Follow'
-
-    user_number_of_followers = len(FollowersCount.objects.filter(user=pk))
-    user_number_of_following = len(FollowersCount.objects.filter(follower=pk))
-
-    context = {
-        'user_object': user_object,
-        'user_profile': user_profile,
-        'user_posts': user_posts,
-        'user_number_of_posts': user_number_of_posts,
-        'button_text': button_text,
-        'user_number_of_followers': user_number_of_followers,
-        'user_number_of_following': user_number_of_following,
-    }
-
-    return render(request, 'profile.html', context)
-
-
-@login_required(login_url='signin')
 def follow(request):
     if request.method == 'POST':
         follower = request.POST['follower']
         user = request.POST['user']
         # the follower is already following the user -> unfollow the user
-        if FollowersCount.objects.filter(follower=follower, user=user).first():
-            delete_follower = FollowersCount.objects.get(
+        if Followers.objects.filter(follower=follower, user=user).first():
+            delete_follower = Followers.objects.get(
                 follower=follower, user=user)
             delete_follower.delete()
             return redirect('/profile/'+user)
         else:
             # follow the user
-            new_follower = FollowersCount.objects.create(
+            new_follower = Followers.objects.create(
                 follower=follower, user=user)
             new_follower.save()
             return redirect('/profile/'+user)
@@ -208,9 +211,9 @@ def myposts(request):
     user_posts = Post.objects.filter(user=user_object)
     user_number_of_posts = len(user_posts)
 
-    user_number_of_followers = len(FollowersCount.objects.filter(user=user_object))
-    user_number_of_following = len(FollowersCount.objects.filter(follower=user_object))
-    
+    user_number_of_followers = len(Followers.objects.filter(user=user_object))
+    user_number_of_following = len(Followers.objects.filter(follower=user_object))
+
     context = {
         'user_object': user_object,
         'user_profile': user_profile,
@@ -226,8 +229,7 @@ def myposts(request):
 @login_required(login_url='signin')
 def delete_post(request):
     if request.method == 'POST':
-        
-        post_id=request.POST['post_id']
+        post_id = request.POST['post_id']
         Post.objects.filter(id=post_id).delete()
 
         user_object = User.objects.get(username=request.user.username)
@@ -235,9 +237,11 @@ def delete_post(request):
         user_posts = Post.objects.filter(user=user_object)
         user_number_of_posts = len(user_posts)
 
-        user_number_of_followers = len(FollowersCount.objects.filter(user=user_object))
-        user_number_of_following = len(FollowersCount.objects.filter(follower=user_object))
-        
+        user_number_of_followers = len(
+            Followers.objects.filter(user=user_object))
+        user_number_of_following = len(
+            Followers.objects.filter(follower=user_object))
+
         context = {
             'user_object': user_object,
             'user_profile': user_profile,

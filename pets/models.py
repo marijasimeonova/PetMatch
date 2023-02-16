@@ -6,6 +6,8 @@ from datetime import datetime
 User = get_user_model()
 
 # Create your models here.
+
+
 class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     id_user = models.IntegerField()
@@ -26,7 +28,6 @@ class Post(models.Model):
     created_at = models.DateTimeField(default=datetime.now)
     number_of_likes = models.IntegerField(default=0)
 
-
     def __str__(self):
         return self.user
 
@@ -39,7 +40,7 @@ class LikePost(models.Model):
         return self.username
 
 
-class FollowersCount(models.Model):
+class Followers(models.Model):
     follower = models.CharField(max_length=100)
     user = models.CharField(max_length=100)
 

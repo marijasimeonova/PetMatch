@@ -18,39 +18,53 @@
 
 </head>
 <body>
-<div class="theme-layout">
-	
-	</div>
-	
+	<div class="theme-layout"></div>
 	<section>
-			<div class="feature-photo">
-				<figure><img src="{% static 'images/resources/cover.jpg' %}" alt=""></figure>
-				<form action="/follow" method="POST">
-					{% csrf_token %}
-					<div class="add-btn">
-					<span style="color: black; font-size: 21px; margin-right: 80px;"><b><u><a href="/">Home</a></u></b></span>
+		<div class="feature-photo">
+			<figure>
+				<img src="{% static 'images/resources/cover.jpg' %}" alt="">
+			</figure>
+			<form action="/follow" method="POST">
+			{% csrf_token %}
+				<div class="add-btn">
+					<span style="color: black; font-size: 21px; margin-right: 80px;">
+						<b><u><a href="/">Home</a></u></b>
+					</span>
 					{% if user_object.username == user.username %}
-					<span style="color: black; font-size: 21px; margin-right: 380px;"><b><u><a href="/myposts">My posts</a></u></b></span>
+					<span style="color: black; font-size: 21px; margin-right: 380px;">
+						<b><u><a href="/myposts">My posts</a></u></b>
+					</span>
 					{% else %}
 					<span style="margin-right: 520px;"></span>
 					{% endif %}
 
 					{% if user_number_of_posts == 0 %}
-					<span style="color: black; font-size: 21px;"><b>No Posts</b></span>
+					<span style="color: black; font-size: 21px;">
+						<b>No Posts</b>
+					</span>
 					{% elif user_number_of_posts == 1 %}
-					<span style="color: black; font-size: 21px;"><b>{{user_number_of_posts}} Post</b></span>
+					<span style="color: black; font-size: 21px;">
+						<b>{{user_number_of_posts}} Post</b>
+					</span>
 					{% else %}
-					<span style="color: black; font-size: 21px;"><b>{{user_number_of_posts}} Posts</b></span>
+					<span style="color: black; font-size: 21px;">
+						<b>{{user_number_of_posts}} Posts</b>
+					</span>
 					{% endif %}
 
 					{% if user_number_of_followers == 1 %}
-					<span style="color: black; font-size: 21px;"><b>{{user_number_of_followers}} follower</b></span>
+					<span style="color: black; font-size: 21px;">
+						<b>{{user_number_of_followers}} follower</b>
+					</span>
 					{% else %}
-					<span style="color: black; font-size: 21px;"><b>{{user_number_of_followers}} followers</b></span>
+					<span style="color: black; font-size: 21px;">
+						<b>{{user_number_of_followers}} followers</b>
+					</span>
 					{% endif %}
 
-
-					<span style="color: black; font-size: 21px;"><b>{{user_number_of_following}} following</b></span>
+					<span style="color: black; font-size: 21px;">
+						<b>{{user_number_of_following}} following</b>
+					</span>
 
 					<input type="hidden" value="{{user.username}}" name="follower" />
 					<input type="hidden" value="{{user_object.username}}" name="user" />
@@ -58,46 +72,48 @@
 					{% if user_object.username == user.username %}
 					<a href="/settings" data-ripple="" style="background-color: blue !important; border: blue; font-weight: bold;">Account Settings</a>
 					{% else %}
-					<a data-ripple="" style="background-color: blue !important; border: blue;"><button type="submit" style="background-color: blue; border: blue;">{{button_text}}</button></a>
+					<a data-ripple="" style="background-color: blue !important; border: blue;">
+						<button type="submit" style="background-color: blue; border: blue;">{{button_text}}</button>
+					</a>
 					{% endif %}
 
-					</div>
-				</form>
+				</div>
+			</form>
 
-				<div class="container-fluid">
-					<div class="row merged">
-						<div class="col-lg-2 col-sm-3">
-							<div class="user-avatar">
-								<figure>
-									<img src="{{user_profile.profileimg.url}}" style="height: 250px; width: 100%;" alt="">
-									
-								</figure>
-							</div>
+			<div class="container-fluid">
+				<div class="row merged">
+					<div class="col-lg-2 col-sm-3">
+						<div class="user-avatar">
+							<figure>
+								<img src="{{user_profile.profileimg.url}}" style="height: 250px; width: 100%;" alt="">
+							</figure>
 						</div>
-						<div class="col-lg-10 col-sm-9">
-							<div class="timeline-info">
-								<ul>
-									<li class="admin-name">
-									  <h5 style="color: black;white-space: nowrap; width: 110px; font-size: 27px;"><b>{{user_profile.user.username}}</b></h5>
-									</li>
-								</ul>
-							</div>
+					</div>
+					<div class="col-lg-10 col-sm-9">
+						<div class="timeline-info">
+							<ul>
+								<li class="admin-name">
+									<h5 style="color: black;white-space: nowrap; width: 110px; font-size: 27px;"><b>{{user_profile.user.username}}</b></h5>
+								</li>
+							</ul>
 						</div>
 					</div>
 				</div>
 			</div>
-		</section><!-- top area -->
-		<section>
-			<div class="bio">
-				<div class="location">
-					<div class="phone_number">
-						{{user_profile.bio}}<br>
-						I am from {{user_profile.location}}.<br>
-						<b> If you want to hangout call my owner: {{user_profile.phone_number}}</b>
-					</div>
-				</div>	
-			</div>
-		</section>
+		</div>
+	</section>
+
+	<section>
+		<div class="bio">
+			<div class="location">
+				<div class="phone_number">
+					{{user_profile.bio}}<br>
+					I am from {{user_profile.location}}.<br>
+					<b> If you want to hangout call my owner: {{user_profile.phone_number}}</b>
+				</div>
+			</div>	
+		</div>
+	</section>
 		
 	<section>
 		<div class="gap gray-bg">
@@ -106,17 +122,12 @@
 					<div class="col-lg-12">
 						<div class="row" id="page-contents">
 							<div class="col-lg-3">
-								<aside class="sidebar static">
-									
-									
-									
-								</aside>
-							</div><!-- sidebar -->
-							
+								<aside class="sidebar static"></aside>
+							</div>
 							<div class="col-lg-6">
 								<div class="central-meta">
 									<ul class="photos">
-								
+							
 										{% for post in user_posts %}
 										<li>
 											<a class="strip" href="{{post.image.url}}" title="" data-strip-group="mygroup" data-strip-group-options="loop: false">
@@ -125,13 +136,11 @@
 										{% endfor %}
 										
 									</ul>
-								</div><!-- photos -->
-							</div><!-- centerl meta -->
+								</div>
+							</div>
 							<div class="col-lg-3">
-								<aside class="sidebar static">
-									
-								</aside>
-							</div><!-- sidebar -->
+								<aside class="sidebar static"></aside>
+							</div>
 						</div>	
 					</div>
 				</div>
@@ -139,10 +148,10 @@
 		</div>	
 	</section>
 
-	
-	<script data-cfasync="false" src="{% static '../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js' %}"></script><script src="{% static 'js/main.min.js' %}"></script>
+	 <!-- Scripts -->
+	<script data-cfasync="false" src="{% static '../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js' %}"></script>
+	<script src="{% static 'js/main.min.js' %}"></script>
 	<script src="{% static 'js/script.js' %}"></script>
-
 </body>	
 
 
