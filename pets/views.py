@@ -11,7 +11,7 @@ import random
 
 
 @login_required(login_url='signin')
-def index(request):
+def home(request):
     user_object = User.objects.get(username=request.user.username)
     user_profile = Profile.objects.get(user=user_object)
 
@@ -58,7 +58,7 @@ def index(request):
 
     suggestions_profiles = list(chain(*username_profile_list))
 
-    return render(request, 'index.html', {'user_profile': user_profile, 'posts': feed_list, 'suggestions_profiles': suggestions_profiles[:6]})
+    return render(request, 'home.html', {'user_profile': user_profile, 'posts': feed_list, 'suggestions_profiles': suggestions_profiles[:6]})
 
 
 # pk is the username of the currently viewed user
@@ -229,6 +229,7 @@ def myposts(request):
 @login_required(login_url='signin')
 def delete_post(request):
     if request.method == 'POST':
+
         post_id = request.POST['post_id']
         Post.objects.filter(id=post_id).delete()
 
