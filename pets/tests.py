@@ -1,9 +1,10 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.test import SimpleTestCase
 from django.urls import reverse, resolve
 from .views import home, profile, upload, like_post, search, follow, settings, myposts, delete_post, signup, signin, logout
 from .models import Profile, Post, LikePost, Followers
 from django.contrib.auth.models import User
+from django.contrib.messages import get_messages
 
 # Create your tests here.
 
@@ -91,3 +92,62 @@ class TestModels(TestCase):
         followers = Followers(follower='rex', user='mia')
         followers.save()
         self.assertEqual(str(followers), 'mia')
+
+
+class TestViews(TestCase):
+
+    def test_should_show_signup_page(self):
+        response = self.client.get(reverse('signup'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'signup.html')
+
+    def test_should_show_signin_page(self):
+        response = self.client.get(reverse('signin'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'signin.html')
+
+    def test_should_signup_user(self):
+        self.user = {
+            'username': 'username',
+            'email': 'email',
+            'password': 'password',
+            'password2': 'password'
+        }
+
+        response = self.client.post(reverse('signup'), self.user)
+        self.assertRedirects(response, '/settings', status_code=302, 
+        target_status_code=200, fetch_redirect_response=True)
+
+    def test_should_not_signup_user_with_unmatching_passwords(self):
+        self.user = {
+            'username': 'username',
+            'email': 'email',
+            'password': 'password',
+            'password2': 'pass'
+        }
+
+        response = self.client.post(reverse('signup'), self.user)
+        self.assertRedirects(response, '/signup', status_code=302, 
+        target_status_code=200, fetch_redirect_response=True)
+
+    def test_should_signin_user(self):
+        self.user = {
+            'username': 'username',
+            'password': 'password'
+        }
+        
+        response = self.client.post(reverse('signin'), self.user)
+        self.assertRedirects(response, '/signin', status_code=302, 
+        target_status_code=200, fetch_redirect_response=True)
+        
+    def test_redirect_user_to_signup_if_using_GET(self):
+        self.user = {
+            'username': 'username',
+            'email': 'email',
+            'password': 'password',
+            'password2': 'password'
+        }
+
+        response = self.client.get(reverse('signup'), self.user)
+        self.assertEquals(response.status_code, 200)
+        
